@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Facebook, Instagram, Phone as WhatsappIcon, Mail, MapPin } from 'lucide-react';
 
 const ContactPage = () => {
@@ -36,7 +36,7 @@ const ContactPage = () => {
                     </div>
                     <div className="flex items-center gap-4 text-muted">
                         <Mail className="text-primary" size={20} />
-                        <span>support@uzquettastore.com</span>
+                        <span>uzquettastore@gmail.com</span>
                     </div>
                     <div className="flex items-center gap-4 text-muted">
                         <MapPin className="text-primary" size={20} />
