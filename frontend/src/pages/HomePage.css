@@ -1,0 +1,366 @@
+/* HomePage CSS */
+
+.hero-section {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1) 0%, var(--bg-surface-light) 40%, var(--bg-color) 100%);
+    margin-top: -80px;
+    /* Pull up under transparent navbar */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(248, 250, 252, 0.8) 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 160px;
+    /* Push down below the taller navbar */
+    padding-bottom: 80px;
+    /* Add bottom padding so buttons aren't hidden */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-logo {
+    max-width: 220px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 2.5rem;
+    padding: 0.5rem;
+    display: block;
+    border-radius: var(--radius-md);
+    mix-blend-mode: multiply;
+    /* Better for light backgrounds */
+    transition: transform var(--transition-bounce);
+}
+
+.hero-logo:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .hero-logo {
+        max-width: 140px;
+    }
+}
+
+.hero-title {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+    padding: 0 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 2.5rem;
+        padding: 0;
+    }
+}
+
+.btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Features Banner */
+.features-banner {
+    margin-top: -40px;
+    position: relative;
+    z-index: 20;
+    border-radius: var(--radius-lg);
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-surface);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 768px) {
+    .features-banner {
+        margin-left: max(2rem, calc((100% - 1280px) / 2));
+        margin-right: max(2rem, calc((100% - 1280px) / 2));
+        padding: 2.5rem;
+    }
+}
+
+.feature-icon {
+    color: var(--primary);
+    background: rgba(212, 175, 55, 0.1);
+    /* Gold tint */
+    padding: 1rem;
+    border-radius: 50%;
+}
+
+/* Categories Section */
+.py-16 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.hover-underline:hover {
+    text-decoration: underline;
+}
+
+.text-primary {
+    color: var(--primary-light);
+}
+
+.category-card {
+    display: block;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.category-image-wrapper {
+    position: relative;
+    padding-top: 100%;
+    /* 1:1 Aspect Ratio */
+    overflow: hidden;
+}
+
+.category-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0) 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+    transition: opacity var(--transition-normal);
+}
+
+.category-title {
+    font-size: 1.5rem;
+    color: white;
+    margin: 0;
+    transform: translateY(10px);
+    transition: transform var(--transition-normal);
+}
+
+.category-card:hover .category-image {
+    transform: scale(1.1);
+}
+
+.category-card:hover .category-title {
+    transform: translateY(0);
+}
+
+/* Utilities */
+.my-12 {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.p-10 {
+    padding: 2.5rem;
+}
+
+.rounded-2xl {
+    border-radius: 1rem;
+}
+
+.max-w-lg {
+    max-width: 32rem;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+    line-height: 1.2;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-10 {
+    margin-bottom: 2.5rem;
+}
+
+.bg-surface {
+    background-color: var(--bg-surface);
+}
+
+.border-surface-light {
+    border-color: var(--bg-surface-light);
+}
+
+.product-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bg-surface-light);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+    /* Gold hint on hover */
+}
+
+/* Minimal Product Cards specific for homepage */
+.product-card-minimal {
+    position: relative;
+    background: white;
+    overflow: hidden;
+    /* Optional: add a subtle border if needed, reference seems borderless/very thin */
+    border: 1px solid #f0f0f0; 
+}
+
+.badge-new-in {
+    background-color: #f5f5f5 !important; /* Light greyish bg */
+    color: #333 !important; /* Dark text */
+    font-size: 0.70rem !important;
+    font-weight: 500 !important;
+    padding: 2px 8px !important;
+    border-radius: 2px !important;
+    letter-spacing: 0.05em;
+    border: 1px solid #e0e0e0;
+}
+
+.rounded-t-xl {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.rounded-b-xl {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-72 {
+    height: 14rem;
+    /* More compact image height */
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.top-3 {
+    top: 0.75rem;
+}
+
+.left-3 {
+    left: 0.75rem;
+}
+
+.z-10 {
+    z-index: 10;
+}
+
+.p-5 {
+    padding: 1rem;
+    /* Tighter padding for compact look */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.line-through {
+    text-decoration: line-through;
+}
+
+.mt-3 {
+    margin-top: 0.75rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+/* Transform utils */
+.transform {
+    transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1));
+}
+
+.rotate-3 {
+    --tw-rotate: 3deg;
+}
+
+.hover\:rotate-0:hover {
+    --tw-rotate: 0deg;
+}
+
+.duration-500 {
+    transition-duration: 500ms;
+}
+
+.duration-700 {
+    transition-duration: 700ms;
+}
