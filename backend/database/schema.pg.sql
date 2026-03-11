@@ -116,11 +116,12 @@ VALUES (
     'https://www.tiktok.com/@uzquetta.store?_r=1&_t=ZS-94bAuS3vKmv',
     '+92 313 3844566',
     '+92 313 3844566',
-    'admin@uzquettastore.com'
+    'uzquettastore@gmail.com'
 )
 ON CONFLICT (id) DO UPDATE SET
     facebook_url = EXCLUDED.facebook_url,
     instagram_url = EXCLUDED.instagram_url,
     tiktok_url = EXCLUDED.tiktok_url,
     whatsapp_number = EXCLUDED.whatsapp_number,
-    store_phone = EXCLUDED.store_phone;
+    store_phone = EXCLUDED.store_phone,
+    store_email = EXCLUDED.store_email;
