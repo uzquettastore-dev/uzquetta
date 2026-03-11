@@ -108,6 +108,19 @@ CREATE TABLE IF NOT EXISTS Settings (
 );
 
 -- Insert Default Settings Row
-INSERT INTO Settings (id, facebook_url, store_email) 
-VALUES (1, '', 'admin@uzquettastore.com')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO Settings (id, facebook_url, instagram_url, tiktok_url, whatsapp_number, store_phone, store_email) 
+VALUES (
+    1, 
+    'https://www.facebook.com/profile.php?id=61584876434235', 
+    'https://www.instagram.com/uzquetta.store?igsh=MTQ3N2h6OWRrdWk3bA==',
+    'https://www.tiktok.com/@uzquetta.store?_r=1&_t=ZS-94bAuS3vKmv',
+    '+92 313 3844566',
+    '+92 313 3844566',
+    'admin@uzquettastore.com'
+)
+ON CONFLICT (id) DO UPDATE SET
+    facebook_url = EXCLUDED.facebook_url,
+    instagram_url = EXCLUDED.instagram_url,
+    tiktok_url = EXCLUDED.tiktok_url,
+    whatsapp_number = EXCLUDED.whatsapp_number,
+    store_phone = EXCLUDED.store_phone;

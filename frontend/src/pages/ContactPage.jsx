@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Facebook, Instagram, Phone as WhatsappIcon, Mail, MapPin } from 'lucide-react';
 
 const ContactPage = () => {
@@ -11,21 +11,29 @@ const ContactPage = () => {
                 <p className="text-muted text-lg mb-10">We'd love to hear from you. Reach out to us through any of the platforms below.</p>
 
                 <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mb-12">
-                    <a href="#" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
+                    <a href="https://www.facebook.com/profile.php?id=61584876434235" target="_blank" rel="noreferrer" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
                         <Facebook size={48} className="group-hover:scale-110 transition-transform duration-300 mb-5" />
                         <span className="font-semibold text-sm uppercase tracking-widest">Facebook</span>
                     </a>
-                    <a href="#" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
+                    <a href="https://www.instagram.com/uzquetta.store?igsh=MTQ3N2h6OWRrdWk3bA==" target="_blank" rel="noreferrer" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
                         <Instagram size={48} className="group-hover:scale-110 transition-transform duration-300 mb-5" />
                         <span className="font-semibold text-sm uppercase tracking-widest">Instagram</span>
                     </a>
-                    <a href="#" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
+                    <a href="https://wa.me/923133844566" target="_blank" rel="noreferrer" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
                         <WhatsappIcon size={48} className="group-hover:scale-110 transition-transform duration-300 mb-5" />
                         <span className="font-semibold text-sm uppercase tracking-widest">WhatsApp</span>
+                    </a>
+                    <a href="https://www.tiktok.com/@uzquetta.store?_r=1&_t=ZS-94bAuS3vKmv" target="_blank" rel="noreferrer" className="flex flex-col items-center group text-muted hover:text-primary transition-colors px-4 sm:px-8 py-4">
+                        <span className="text-4xl font-extrabold group-hover:scale-110 transition-transform duration-300 mb-5">t</span>
+                        <span className="font-semibold text-sm uppercase tracking-widest">TikTok</span>
                     </a>
                 </div>
 
                 <div className="border-t border-surface-light pt-8 flex flex-col gap-4 text-left mx-auto max-w-md">
+                    <div className="flex items-center gap-4 text-muted">
+                        <WhatsappIcon className="text-primary" size={20} />
+                        <span>+92 313 3844566</span>
+                    </div>
                     <div className="flex items-center gap-4 text-muted">
                         <Mail className="text-primary" size={20} />
                         <span>support@uzquettastore.com</span>
