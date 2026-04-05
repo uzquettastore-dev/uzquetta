@@ -252,21 +252,34 @@
 /* Minimal Product Cards specific for homepage */
 .product-card-minimal {
     position: relative;
-    background: white;
+    background: var(--bg-surface);
     overflow: hidden;
-    /* Optional: add a subtle border if needed, reference seems borderless/very thin */
-    border: 1px solid #f0f0f0; 
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--bg-surface-light); 
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-bounce);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card-minimal:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(212, 175, 55, 0.4);
 }
 
 .badge-new-in {
-    background-color: #f5f5f5 !important; /* Light greyish bg */
-    color: #333 !important; /* Dark text */
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text-main) !important;
     font-size: 0.70rem !important;
-    font-weight: 500 !important;
-    padding: 2px 8px !important;
-    border-radius: 2px !important;
-    letter-spacing: 0.05em;
-    border: 1px solid #e0e0e0;
+    font-weight: 700 !important;
+    padding: 0.35rem 0.75rem !important;
+    border-radius: var(--radius-full) !important;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-sm);
 }
 
 .rounded-t-xl {
@@ -313,8 +326,7 @@
 }
 
 .p-5 {
-    padding: 1rem;
-    /* Tighter padding for compact look */
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;

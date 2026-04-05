@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, User } from 'lucide-react';
 import './AuthPages.css';
@@ -52,7 +52,7 @@ const RegisterPage = () => {
                             <label className="auth-label">Full Name</label>
                             <div className="auth-input-wrapper">
                                 <div className="auth-input-icon"><User size={18} /></div>
-                                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="auth-input" placeholder="John Doe" />
+                                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="auth-input" placeholder="Ahmed Khan" />
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@ const RegisterPage = () => {
                             <label className="auth-label">Email Address</label>
                             <div className="auth-input-wrapper">
                                 <div className="auth-input-icon"><Mail size={18} /></div>
-                                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="auth-input" placeholder="you@example.com" />
+                                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="auth-input" placeholder="ahmed@example.pk" />
                             </div>
                         </div>
 

@@ -159,33 +159,46 @@ const ProductsPage = () => {
                             <button onClick={() => { handleCategoryChange('all'); setSearchTerm(''); searchParams.delete('search'); setSearchParams(searchParams); }} className="btn btn-outline mt-6">Clear All Filters</button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 px-2 md:px-0">
                             {filteredProducts.map(product => (
                                 <div key={product.id} className="product-card-minimal group relative fade-in">
                                     <Link to={`/product/${product.id}`} className="block relative overflow-hidden">
                                         {product.is_sale && (
-                                            <div className="absolute bottom-4 left-4 z-10">
-                                                <span className="badge badge-sale badge-new-in">{product.sale_message || 'SALE'}</span>
+                                            <div className="absolute top-3 left-3 z-10">
+                                                <span className="badge-yellow-blink">
+                                                    {product.sale_message || 'SALE'}
+                                                </span>
                                             </div>
                                         )}
                                         {!product.is_sale && (
-                                             <div className="absolute bottom-4 left-4 z-10">
-                                                <span className="badge badge-sale badge-new-in">NEW IN</span>
+                                             <div className="absolute top-3 left-3 z-10">
+                                                <span className="badge-yellow-blink">
+                                                    NEW IN
+                                                </span>
                                             </div>
                                         )}
-                                        <img src={product.image_urls && product.image_urls.length > 0 ? product.image_urls[0] : product.image_url} alt={product.name} className="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        <img src={product.image_urls && product.image_urls.length > 0 ? product.image_urls[0] : product.image_url} alt={product.name} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ aspectRatio: '3/4' }} />
                                     </Link>
-                                    <div className="pt-4 pb-6 px-4 flex flex-col items-center bg-white">
-                                        <Link to={`/product/${product.id}`}>
-                                            <h3 className="text-sm uppercase tracking-wider font-semibold mb-1 text-truncate hover:text-primary transition-colors">{product.name}</h3>
-                                        </Link>
-                                        <div className="flex items-center gap-2">
-                                            {product.is_sale ? (
+                                    <div className="pt-4 pb-6 px-4 flex flex-col items-center bg-white flex-grow justify-between">
+                                        <div className="text-center w-full">
+                                            <Link to={`/product/${product.id}`}>
+                                                <h3 className="text-sm text-center mx-auto tracking-widest font-bold mb-1 text-truncate hover:text-primary transition-colors text-main uppercase" style={{ fontFamily: 'var(--font-heading)' }}>{product.name}</h3>
+                                            </Link>
+                                            {product.description && (
+                                                <p className="text-[0.8rem] text-muted mb-3 line-clamp-2 w-full overflow-hidden leading-relaxed italic" style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{product.description}</p>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-center gap-2 mt-auto" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                            {product.discounted_price ? (
                                                 <>
-                                                    <span className="text-sm font-semibold">Rs.{product.discounted_price}</span>
+                                                    <span className="text-[0.85rem] text-gray-500 line-through font-normal">{Number(product.price).toFixed(2)} PKR</span>
+                                                    <span className="text-black tracking-tight" style={{ fontWeight: 900, fontSize: '1.2rem', textShadow: '0 0 1px rgba(0,0,0,0.5)' }}>{Number(product.discounted_price).toFixed(2)} PKR</span>
                                                 </>
                                             ) : (
-                                                <span className="text-sm font-semibold">Rs.{product.price}</span>
+                                                <>
+                                                    <span className="text-[0.85rem] text-gray-500 line-through font-normal">{(Number(product.price) + 500).toFixed(2)} PKR</span>
+                                                    <span className="text-black tracking-tight" style={{ fontWeight: 900, fontSize: '1.2rem', textShadow: '0 0 1px rgba(0,0,0,0.5)' }}>{Number(product.price).toFixed(2)} PKR</span>
+                                                </>
                                             )}
                                         </div>
                                     </div>

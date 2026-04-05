@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { CheckCircle, CreditCard, Banknote, Upload, ShieldCheck } from 'lucide-react';
@@ -8,6 +8,8 @@ const CheckoutPage = () => {
     const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [finalOrderTotal, setFinalOrderTotal] = useState(0);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -39,6 +41,7 @@ const CheckoutPage = () => {
 
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const data = new FormData();
         data.append('customer_name', formData.name);
@@ -55,7 +58,7 @@ const CheckoutPage = () => {
         }));
         data.append('orderItems', JSON.stringify(items));
 
-        if (formData.paymentMethod === 'EasyPaisa' && screenshot) {
+        if ((formData.paymentMethod === 'EasyPaisa' || formData.paymentMethod === 'JazzCash') && screenshot) {
             data.append('screenshot', screenshot);
         }
 
@@ -66,6 +69,7 @@ const CheckoutPage = () => {
             });
 
             if (res.ok) {
+                setFinalOrderTotal(total);
                 clearCart();
                 setStep(3);
             } else {
@@ -75,6 +79,8 @@ const CheckoutPage = () => {
         } catch (error) {
             console.error("Order error:", error);
             alert("Failed to place order. Connection error.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -111,26 +117,26 @@ const CheckoutPage = () => {
                         <h2 className="text-2xl font-bold mb-6">Shipping Information</h2>
                         <form onSubmit={handleNextStep} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-muted mb-1">Full Name</label>
-                                <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="John Doe" />
+                                <label className="block text-sm font-bold text-main mb-1.5 ml-1">Full Name</label>
+                                <input required type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Ahmed Khan" className="bg-white border-2 border-surface-light rounded-xl hover:border-primary/50 transition-colors shadow-sm" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-muted mb-1">Email</label>
-                                    <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="john@example.com" />
+                                    <label className="block text-sm font-bold text-main mb-1.5 ml-1">Email</label>
+                                    <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="ahmed@example.pk" className="bg-white border-2 border-surface-light rounded-xl hover:border-primary/50 transition-colors shadow-sm" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-muted mb-1">Phone</label>
-                                    <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="0300 1234567" />
+                                    <label className="block text-sm font-bold text-main mb-1.5 ml-1">Phone</label>
+                                    <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="0300 1234567" className="bg-white border-2 border-surface-light rounded-xl hover:border-primary/50 transition-colors shadow-sm" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-muted mb-1">Complete Address</label>
-                                <textarea required name="address" value={formData.address} onChange={handleInputChange} rows="3" placeholder="House #, Street, Block..."></textarea>
+                                <label className="block text-sm font-bold text-main mb-1.5 ml-1">Complete Address</label>
+                                <textarea required name="address" value={formData.address} onChange={handleInputChange} rows="3" placeholder="House #, Street, Block..." className="bg-white border-2 border-surface-light rounded-xl hover:border-primary/50 transition-colors shadow-sm"></textarea>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-muted mb-1">City</label>
-                                <input required type="text" name="city" value={formData.city} onChange={handleInputChange} placeholder="Karachi" />
+                                <label className="block text-sm font-bold text-main mb-1.5 ml-1">City</label>
+                                <input required type="text" name="city" value={formData.city} onChange={handleInputChange} placeholder="Karachi" className="bg-white border-2 border-surface-light rounded-xl hover:border-primary/50 transition-colors shadow-sm" />
                             </div>
                             <button type="submit" className="btn btn-primary w-full mt-6 py-4">Continue to Payment</button>
                         </form>
@@ -144,7 +150,11 @@ const CheckoutPage = () => {
                                 {cartItems.map(item => (
                                     <div key={item.product_id} className="flex gap-4 items-center bg-white p-3 rounded-xl shadow-sm border border-surface-light">
                                         <div className="relative shrink-0">
-                                            <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-lg shadow-sm border border-surface-light" />
+                                            <img 
+                                                src={item.image_url?.startsWith('http') ? item.image_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${item.image_url}`} 
+                                                alt={item.name} 
+                                                className="w-16 h-16 object-cover rounded-lg shadow-sm border border-surface-light" 
+                                            />
                                             <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold w-6 h-6 flex justify-center items-center rounded-full shadow-md z-10 border-2 border-white">
                                                 {item.quantity}
                                             </span>
@@ -161,9 +171,13 @@ const CheckoutPage = () => {
                             </div>
 
                             <div className="border-t border-surface-light pt-4 space-y-2 text-sm text-muted">
-                                <div className="flex justify-between"><span>Subtotal:</span><span>Rs. {subtotal}</span></div>
-                                <div className="flex justify-between"><span>Delivery:</span><span>Rs. {deliveryCharges}</span></div>
-                                <div className="flex justify-between font-bold text-lg text-main mt-4 border-t border-surface-light pt-4"><span>Total:</span><span className="text-primary">Rs. {total}</span></div>
+
+                                <div className="flex justify-between items-center text-main font-medium"><span>Subtotal:</span><span>Rs. {subtotal}</span></div>
+                                <div className="flex justify-between items-center text-main font-medium"><span>Delivery:</span><span>Rs. {deliveryCharges}</span></div>
+                                <div className="flex justify-between items-end font-black text-2xl text-main mt-4 border-t border-surface-light pt-4 pb-2">
+                                    <span className="text-lg">Total</span>
+                                    <span className="text-primary flex items-baseline gap-1"><span className="text-xs font-bold text-muted mr-1">PKR</span>Rs. {total}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -192,26 +206,65 @@ const CheckoutPage = () => {
                             </label>
 
                             {/* EasyPaisa Option */}
-                            <label className={`block p-4 rounded-xl border-2 cursor-pointer transition-colors ${formData.paymentMethod === 'EasyPaisa' ? 'border-primary bg-primary/5' : 'border-surface-light hover:border-primary/50'}`}>
-                                <div className="flex items-center gap-3">
-                                    <input type="radio" name="paymentMethod" value="EasyPaisa" checked={formData.paymentMethod === 'EasyPaisa'} onChange={handleInputChange} className="w-5 h-5 text-primary" />
-                                    <CreditCard className={formData.paymentMethod === 'EasyPaisa' ? 'text-primary' : 'text-muted'} />
-                                    <span className="font-semibold text-lg">EasyPaisa</span>
+                            <label className={`block p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${formData.paymentMethod === 'EasyPaisa' ? 'border-primary bg-primary/5 shadow-md transform scale-[1.02]' : 'border-surface-light hover:border-primary/30'}`}>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-4">
+                                        <input type="radio" name="paymentMethod" value="EasyPaisa" checked={formData.paymentMethod === 'EasyPaisa'} onChange={handleInputChange} className="w-5 h-5 text-primary accent-primary" />
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-lg text-main">EasyPaisa</span>
+                                            <span className="text-xs text-muted">Mobile Wallet Transfer</span>
+                                        </div>
+                                    </div>
+                                    <img src="/Easypaisa-app-logo-vector.png" alt="EasyPaisa" className="h-5 object-contain" style={{ maxWidth: '100px' }} />
                                 </div>
                                 {formData.paymentMethod === 'EasyPaisa' && (
-                                    <div className="ml-8 mt-4 slide-up border-t border-primary/20 pt-4">
-                                        <p className="text-sm mb-2 text-main">Please transfer <strong className="text-primary">Rs. {total}</strong> to the following EasyPaisa account:</p>
-                                        <div className="bg-surface p-3 rounded-lg mb-4 text-center border-l-4 border-primary">
-                                            <p className="font-bold text-xl tracking-wider">0312 3456789</p>
-                                            <p className="text-xs text-muted">Account Title: UZquettaStore</p>
+                                    <div className="ml-9 mt-5 slide-up border-t border-primary/20 pt-5">
+                                        <p className="text-sm mb-3 text-main">Please transfer <strong className="text-primary font-black">Rs. {total}</strong> to the following EasyPaisa account:</p>
+                                        <div className="bg-white p-4 rounded-xl mb-5 text-center border border-primary/20 shadow-inner">
+                                            <p className="font-black text-2xl tracking-widest text-main mb-1">0312 3456789</p>
+                                            <p className="text-[10px] uppercase font-bold tracking-widest text-primary">Account Title: UZquettaStore</p>
                                         </div>
 
                                         <div className="mt-4">
-                                            <label className="block text-sm font-medium text-main mb-2">Upload Payment Screenshot <span className="text-error">*</span></label>
-                                            <div className="border-2 border-dashed border-surface-light rounded-lg p-6 flex flex-col items-center justify-center bg-surface relative hover:border-primary/50 transition-colors">
-                                                <Upload className="text-muted mb-2" />
-                                                <span className="text-sm text-muted text-center">{screenshot ? screenshot.name : 'Click to upload screenshot (JPG, PNG)'}</span>
-                                                <input required={formData.paymentMethod === 'EasyPaisa'} type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                            <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-3">Upload Payment Screenshot <span className="text-error">*</span></label>
+                                            <div className="border-2 border-dashed border-surface-light rounded-xl p-6 flex flex-col items-center justify-center bg-white/50 relative hover:border-primary/50 transition-colors group">
+                                                <Upload className="text-muted mb-2 group-hover:text-primary transition-colors" size={24} />
+                                                <span className="text-sm font-medium text-main text-center">{screenshot ? screenshot.name : 'Click to upload screenshot'}</span>
+                                                <span className="text-[10px] text-muted mt-1 uppercase">JPG, PNG up to 5MB</span>
+                                                <input required type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </label>
+
+                            {/* JazzCash Option */}
+                            <label className={`block p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${formData.paymentMethod === 'JazzCash' ? 'border-primary bg-primary/5 shadow-md transform scale-[1.02]' : 'border-surface-light hover:border-primary/30'}`}>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-4">
+                                        <input type="radio" name="paymentMethod" value="JazzCash" checked={formData.paymentMethod === 'JazzCash'} onChange={handleInputChange} className="w-5 h-5 text-primary accent-primary" />
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-lg text-main">JazzCash</span>
+                                            <span className="text-xs text-muted">Mobile Wallet Transfer</span>
+                                        </div>
+                                    </div>
+                                    <img src="/JazzCash-2025-Logo-PNG-Vector.png" alt="JazzCash" className="h-5 object-contain" style={{ maxWidth: '100px' }} />
+                                </div>
+                                {formData.paymentMethod === 'JazzCash' && (
+                                    <div className="ml-9 mt-5 slide-up border-t border-primary/20 pt-5">
+                                        <p className="text-sm mb-3 text-main">Please transfer <strong className="text-primary font-black">Rs. {total}</strong> to the following JazzCash account:</p>
+                                        <div className="bg-white p-4 rounded-xl mb-5 text-center border border-primary/20 shadow-inner">
+                                            <p className="font-black text-2xl tracking-widest text-main mb-1">0312 3456789</p>
+                                            <p className="text-[10px] uppercase font-bold tracking-widest text-primary">Account Title: UZquettaStore</p>
+                                        </div>
+
+                                        <div className="mt-4">
+                                            <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-3">Upload Payment Screenshot <span className="text-error">*</span></label>
+                                            <div className="border-2 border-dashed border-surface-light rounded-xl p-6 flex flex-col items-center justify-center bg-white/50 relative hover:border-primary/50 transition-colors group">
+                                                <Upload className="text-muted mb-2 group-hover:text-primary transition-colors" size={24} />
+                                                <span className="text-sm font-medium text-main text-center">{screenshot ? screenshot.name : 'Click to upload screenshot'}</span>
+                                                <span className="text-[10px] text-muted mt-1 uppercase">JPG, PNG up to 5MB</span>
+                                                <input required type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                                             </div>
                                         </div>
                                     </div>
@@ -222,7 +275,22 @@ const CheckoutPage = () => {
 
                         <div className="flex justify-between items-center">
                             <button type="button" onClick={() => setStep(1)} className="btn btn-outline border-none text-muted hover:text-white">Back to Shipping</button>
-                            <button type="submit" className="btn btn-primary px-8 py-3 text-lg flex gap-2 items-center"><ShieldCheck size={20} /> Complete Order</button>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`btn btn-primary px-8 py-3 text-lg flex gap-2 items-center justify-center min-w-[200px] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <ShieldCheck size={20} /> Complete Order
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -240,7 +308,7 @@ const CheckoutPage = () => {
                         <p className="font-bold text-primary mb-4">Pending Verification</p>
 
                         <p className="text-sm text-muted mb-1">Total Amount:</p>
-                        <p className="font-bold text-2xl">Rs. {total}</p>
+                        <p className="font-bold text-2xl text-main font-black tracking-tight">Rs. {finalOrderTotal}</p>
                     </div>
                     <br />
                     <button onClick={() => navigate('/products')} className="btn btn-primary px-8 py-3">Continue Shopping</button>

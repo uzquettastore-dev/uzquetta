@@ -1,6 +1,13 @@
 const pool = require('../config/db');
+const fs = require('fs');
+const path = require('path');
 // NodeMailer imported
 const { sendOrderConfirmationEmail, sendAdminNotificationEmail } = require('../utils/emailService');
+
+const logPath = path.join(__dirname, '..', 'email_debug.log');
+const logExec = (msg) => {
+    fs.appendFileSync(logPath, `[${new Date().toISOString()}] EXEC: ${msg}\n`);
+};
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -68,9 +75,9 @@ const addOrderItems = async (req, res) => {
         }
 
         // 4. Insert into Payments
-        let screenshot_url = null;
+        let screenshot_path = null;
         if (req.file) {
-            screenshot_url = req.file.path;
+            screenshot_path = req.file.path;
         }
 
         await client.query(
@@ -79,17 +86,36 @@ const addOrderItems = async (req, res) => {
         );
 
         await client.query('COMMIT');
+        logExec(`Order ${orderId} COMMITTED. Starting email prep...`);
 
-        // 5. Send Emails
-        sendOrderConfirmationEmail({ email, customer_name, itemsArray, total_amount, orderId, address });
-        sendAdminNotificationEmail({ customer_name, itemsArray, total_amount, orderId, paymentMethod, screenshot_url });
+        // 5. Enrich items with names for emails
+        const itemsWithNames = [];
+        for (let item of itemsArray) {
+            const { rows: pRows } = await client.query('SELECT name FROM Products WHERE id = $1', [item.product_id]);
+            itemsWithNames.push({
+                ...item,
+                name: pRows[0]?.name || `Product #${item.product_id}`
+            });
+        }
+
+        logExec(`Triggering emails for order ${orderId}...`);
+        
+        // 6. Send Emails (Background task so it doesn't hang the UI)
+        sendOrderConfirmationEmail({ email, customer_name, itemsArray: itemsWithNames, total_amount, orderId, address })
+            .then(() => logExec(`Customer email promise started for ${orderId}`))
+            .catch(err => logExec(`Customer email promise ERROR: ${err.message}`));
+        
+        sendAdminNotificationEmail({ customer_name, itemsArray: itemsWithNames, total_amount, orderId, paymentMethod, screenshot_path })
+            .then(() => logExec(`Admin email promise started for ${orderId}`))
+            .catch(err => logExec(`Admin email promise ERROR: ${err.message}`));
 
         res.status(201).json({ message: 'Order created successfully', orderId });
     } catch (error) {
+        console.error('Order creation error:', error);
         await client.query('ROLLBACK');
         res.status(400).json({ message: error.message });
     } finally {
-        client.release();
+        if (client) client.release();
     }
 };
 

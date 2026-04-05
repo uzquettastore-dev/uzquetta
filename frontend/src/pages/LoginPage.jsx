@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Lock, Mail } from 'lucide-react';
 import './AuthPages.css';
@@ -55,7 +55,7 @@ const LoginPage = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="auth-input"
-                                    placeholder="you@example.com"
+                                    placeholder="ahmed@example.pk"
                                 />
                             </div>
                         </div>

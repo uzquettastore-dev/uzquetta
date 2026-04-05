@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS OrderItems (
 CREATE TABLE IF NOT EXISTS Payments (
     id SERIAL PRIMARY KEY,
     order_id INT NOT NULL,
-    method VARCHAR(20) NOT NULL CHECK (method IN ('EasyPaisa', 'Bank Transfer', 'COD')),
+    method VARCHAR(20) NOT NULL CHECK (method IN ('EasyPaisa', 'JazzCash', 'Bank Transfer', 'COD')),
     status VARCHAR(20) DEFAULT 'Pending' CHECK (status IN ('Pending', 'Verified', 'Failed')),
     screenshot_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

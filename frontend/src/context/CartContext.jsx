@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -31,7 +31,7 @@ export const CartProvider = ({ children }) => {
                 newCart = [...prev, {
                     product_id: product.id,
                     name: product.name,
-                    image_url: product.image_url,
+                    image_url: (product.image_urls && product.image_urls.length > 0) ? product.image_urls[0] : product.image_url,
                     price: priceToUse,
                     original_price: product.price,
                     quantity: quantity,

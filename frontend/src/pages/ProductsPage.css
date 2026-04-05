@@ -62,10 +62,11 @@
 }
 
 .category-filters-list li.active {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.08);
     /* Gold tint */
-    color: var(--primary-light);
-    border-left: 3px solid var(--primary);
+    color: var(--primary);
+    border-radius: var(--radius-md);
+    font-weight: 700;
 }
 
 .category-filters-list li.sale-filter {
@@ -77,10 +78,14 @@
 }
 
 .category-filters-list li.sale-filter:hover {
-    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.05);
+    color: var(--error);
+    transform: translateX(5px);
 }
 
 .category-filters-list li.sale-filter.active {
     background: rgba(239, 68, 68, 0.1);
-    border-left-color: var(--error);
+    color: var(--error);
+    border-radius: var(--radius-md);
+    font-weight: 700;
 }
