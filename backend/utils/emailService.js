@@ -6,7 +6,12 @@ dotenv.config();
 
 const logEmail = (message) => {
     const timestamp = new Date().toISOString();
-    fs.appendFileSync(path.join(__dirname, '..', 'email_debug.log'), `[${timestamp}] ${message}\n`);
+    try {
+        const absoluteLogPath = path.resolve(process.cwd(), 'email_debug.log');
+        fs.appendFileSync(absoluteLogPath, `[${timestamp}] ${message}\n`);
+    } catch (e) {
+        console.error('Log write failed:', e.message);
+    }
 };
 
 const transporter = nodemailer.createTransport({
@@ -127,12 +132,15 @@ const sendAdminNotificationEmail = async ({ customer_name, itemsArray, total_amo
 
         const attachments = [];
         if (screenshot_path) {
-            const absoluteScreenshotPath = path.resolve(process.cwd(), screenshot_path);
+            // Use directly if it's a URL (Cloudinary), resolve if it's a local path
+            const isUrl = screenshot_path.startsWith('http');
+            const finalPath = isUrl ? screenshot_path : path.resolve(process.cwd(), screenshot_path);
+            
             attachments.push({
                 filename: `payment_proof_${orderId}.png`,
-                path: absoluteScreenshotPath
+                path: finalPath
             });
-            logEmail(`Attaching screenshot from: ${absoluteScreenshotPath}`);
+            logEmail(`Attaching screenshot (${isUrl ? 'URL' : 'Local'}): ${finalPath}`);
         }
 
         const mailOptions = {
