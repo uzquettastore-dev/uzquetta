@@ -63,7 +63,7 @@ const CheckoutPage = () => {
         }
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/orders`, {
                 method: 'POST',
                 body: data
             });
@@ -151,7 +151,7 @@ const CheckoutPage = () => {
                                     <div key={item.product_id} className="flex gap-4 items-center bg-white p-3 rounded-xl shadow-sm border border-surface-light">
                                         <div className="relative shrink-0">
                                             <img 
-                                                src={item.image_url?.startsWith('http') ? item.image_url : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${item.image_url}`} 
+                                                src={item.image_url?.startsWith('http') ? item.image_url : `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}${item.image_url}`} 
                                                 alt={item.name} 
                                                 className="w-16 h-16 object-cover rounded-lg shadow-sm border border-surface-light" 
                                             />

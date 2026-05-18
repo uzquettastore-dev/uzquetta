@@ -5,7 +5,7 @@ const pool = require('../config/db');
 // @access  Public
 const getProducts = async (req, res) => {
     try {
-        const { category, keyword } = req.query;
+        const { category, keyword, limit } = req.query;
 
         let query = `
       SELECT p.*,
@@ -38,6 +38,14 @@ const getProducts = async (req, res) => {
         }
 
         query += ' GROUP BY p.id, s.name ORDER BY p.created_at DESC';
+
+        if (limit) {
+            const parsedLimit = parseInt(limit, 10);
+            if (!isNaN(parsedLimit) && parsedLimit > 0) {
+                query += ` LIMIT $${queryParams.length + 1}`;
+                queryParams.push(parsedLimit);
+            }
+        }
 
         const { rows: products } = await pool.query(query, queryParams);
 

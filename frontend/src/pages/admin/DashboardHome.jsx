@@ -15,12 +15,12 @@ const DashboardHome = () => {
             try {
                 // Fetch real data simultaneously
                 const [ordersRes, productsRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
+                    fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/orders`, {
                         headers: {
                             Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo'))?.token}`
                         }
                     }),
-                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`)
+                    fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products`)
                 ]);
 
                 if (ordersRes.ok && productsRes.ok) {

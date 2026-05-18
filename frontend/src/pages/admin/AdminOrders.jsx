@@ -8,7 +8,7 @@ const AdminOrders = () => {
     const fetchOrders = async () => {
         try {
             const token = JSON.parse(localStorage.getItem('adminInfo'))?.token;
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/orders`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -31,7 +31,7 @@ const AdminOrders = () => {
     const updateStatus = async (id, newStatus) => {
         try {
             const token = JSON.parse(localStorage.getItem('adminInfo'))?.token;
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/${id}/status`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

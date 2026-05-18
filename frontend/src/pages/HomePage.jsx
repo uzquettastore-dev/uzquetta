@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Truck, Shield, Clock, RotateCcw } from 'lucide-react';
+import { optimizeCloudinaryUrl } from '../utils/imageHelper';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -10,11 +11,11 @@ const HomePage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch featured products (for now just latest products)
-                const prodRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`);
+                // Fetch featured products (limit to latest 8 products for optimal speed)
+                const prodRes = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products?limit=8`);
                 if (prodRes.ok) {
                     const prodData = await prodRes.json();
-                    setFeaturedProducts(prodData.reverse()); // Show all products, newest first
+                    setFeaturedProducts(prodData); // Query ordered by created_at DESC, so it is already newest first
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -86,7 +87,7 @@ const HomePage = () => {
                                         </span>
                                     </div>
                                 )}
-                                <img src={product.image_urls && product.image_urls.length > 0 ? product.image_urls[0] : product.image_url} alt={product.name} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ aspectRatio: '3/4' }} />
+                                <img src={product.image_urls && product.image_urls.length > 0 ? optimizeCloudinaryUrl(product.image_urls[0]) : optimizeCloudinaryUrl(product.image_url)} alt={product.name} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ aspectRatio: '3/4' }} />
                             </Link>
                             <div className="pt-4 pb-6 px-4 flex flex-col items-center bg-white flex-grow justify-between">
                                 <div className="text-center w-full">

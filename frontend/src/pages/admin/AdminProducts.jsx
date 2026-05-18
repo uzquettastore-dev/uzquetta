@@ -23,8 +23,8 @@ const AdminProducts = () => {
     const fetchData = async () => {
         try {
             const [prodRes, catRes] = await Promise.all([
-                fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`),
-                fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/categories`)
+                fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products`),
+                fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/categories`)
             ]);
             const prodData = await prodRes.json();
             const catData = await catRes.json();
@@ -47,7 +47,7 @@ const AdminProducts = () => {
 
         if (catId) {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/categories/${catId}/subcategories`);
+                const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/categories/${catId}/subcategories`);
                 setSubcategories(await res.json());
             } catch (err) {
                 console.error('Error fetching subcategories', err);
@@ -92,7 +92,7 @@ const AdminProducts = () => {
 
         try {
             const token = JSON.parse(localStorage.getItem('adminInfo'))?.token;
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -155,9 +155,9 @@ const AdminProducts = () => {
                                     <tr key={product.id} className="hover:bg-bg-color/50 transition-colors">
                                         <td className="p-5 font-medium flex items-center gap-4">
                                             {product.image_urls && product.image_urls.length > 0 ? (
-                                                <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${product.image_urls[0]}`} alt={product.name} className="w-12 h-12 rounded-lg object-cover border border-surface-light shadow-sm" />
+                                                <img src={`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}${product.image_urls[0]}`} alt={product.name} className="w-12 h-12 rounded-lg object-cover border border-surface-light shadow-sm" />
                                             ) : product.image_url ? (
-                                                <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${product.image_url}`} alt={product.name} className="w-12 h-12 rounded-lg object-cover border border-surface-light shadow-sm" />
+                                                <img src={`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}${product.image_url}`} alt={product.name} className="w-12 h-12 rounded-lg object-cover border border-surface-light shadow-sm" />
                                             ) : (
                                                 <div className="w-12 h-12 rounded-lg bg-surface-light flex items-center justify-center text-muted shadow-sm"><Package size={20} /></div>
                                             )}

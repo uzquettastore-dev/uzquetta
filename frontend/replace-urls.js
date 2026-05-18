@@ -19,7 +19,7 @@ function walk(dir) {
 }
 
 const files = walk('C:/Users/ABUZAR/Desktop/UZquettastore/frontend/src');
-const API_URL_VAR = "${import.meta.env.VITE_API_URL || 'http://localhost:5000'}";
+const API_URL_VAR = "${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}";
 
 let updatedCount = 0;
 files.forEach(file => {

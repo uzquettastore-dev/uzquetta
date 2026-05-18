@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Filter, Search } from 'lucide-react';
+import { optimizeCloudinaryUrl } from '../utils/imageHelper';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -23,14 +24,14 @@ const ProductsPage = () => {
         const fetchData = async () => {
             try {
                 // Fetch Categories
-                const catRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/categories`);
+                const catRes = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/categories`);
                 if (catRes.ok) {
                     const catData = await catRes.json();
                     setCategories(catData);
                 }
 
                 // Fetch Products
-                const prodRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`);
+                const prodRes = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products`);
                 if (prodRes.ok) {
                     const prodData = await prodRes.json();
                     setProducts(prodData);
@@ -177,7 +178,7 @@ const ProductsPage = () => {
                                                 </span>
                                             </div>
                                         )}
-                                        <img src={product.image_urls && product.image_urls.length > 0 ? product.image_urls[0] : product.image_url} alt={product.name} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ aspectRatio: '3/4' }} />
+                                        <img src={product.image_urls && product.image_urls.length > 0 ? optimizeCloudinaryUrl(product.image_urls[0]) : optimizeCloudinaryUrl(product.image_url)} alt={product.name} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ aspectRatio: '3/4' }} />
                                     </Link>
                                     <div className="pt-4 pb-6 px-4 flex flex-col items-center bg-white flex-grow justify-between">
                                         <div className="text-center w-full">

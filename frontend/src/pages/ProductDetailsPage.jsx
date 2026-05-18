@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ShoppingCart, Heart, Share2, Truck, ShieldCheck, ChevronRight, Zap, RotateCcw } from 'lucide-react';
+import { optimizeCloudinaryUrl } from '../utils/imageHelper';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products/${id}`);
+                const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'https://uzquetta.vercel.app'}`}`}/api/products/${id}`);
                 if (res.ok) {
                     const data = await res.json();
                     setProduct(data);
@@ -65,7 +66,7 @@ const ProductDetailsPage = () => {
                                 </span>
                             </div>
                         )}
-                        <img src={activeImage} alt={product.name} className="w-full h-auto object-cover rounded-xl shadow-sm transition-transform duration-700 hover:scale-[1.02]" style={{ maxHeight: '650px' }} />
+                        <img src={optimizeCloudinaryUrl(activeImage)} alt={product.name} className="w-full h-auto object-cover rounded-xl shadow-sm transition-transform duration-700 hover:scale-[1.02]" style={{ maxHeight: '650px' }} />
                     </div>
                     {product.image_urls && product.image_urls.length > 1 && (
                         <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto custom-scrollbar md:w-24 shrink-0 pb-2 md:pb-0 h-full max-h-[650px]">
@@ -75,7 +76,7 @@ const ProductDetailsPage = () => {
                                     className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-all duration-300 ${activeImage === url ? 'border-primary shadow-md transform scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
                                     onClick={() => setActiveImage(url)}
                                 >
-                                    <img src={url} alt={`${product.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                                    <img src={optimizeCloudinaryUrl(url)} alt={`${product.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>
