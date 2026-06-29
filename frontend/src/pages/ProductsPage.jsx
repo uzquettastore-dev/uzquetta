@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, PackageOpen } from 'lucide-react';
 import { optimizeCloudinaryUrl } from '../utils/imageHelper';
 import './ProductsPage.css';
 
@@ -14,6 +14,8 @@ const ProductsPage = () => {
     const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'all');
     const [searchTerm, setSearchTerm] = useState(searchQuery || '');
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [sortBy, setSortBy] = useState('newest');
 
     // Sync URL parameter changes to local state
     useEffect(() => {
@@ -38,6 +40,8 @@ const ProductsPage = () => {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -85,46 +89,106 @@ const ProductsPage = () => {
         return matchCat && matchSearch;
     });
 
+    // Sort the filtered products
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        const priceA = Number(a.discounted_price || a.price);
+        const priceB = Number(b.discounted_price || b.price);
+        switch (sortBy) {
+            case 'price-asc': return priceA - priceB;
+            case 'price-desc': return priceB - priceA;
+            case 'name': return a.name.localeCompare(b.name);
+            default: return 0; // 'newest' — keep API order (created_at DESC)
+        }
+    });
+
+    // Scroll-reveal observer — re-runs when filteredProducts change
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .section-title').forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+    }, [filteredProducts]);
+
+    // Skeleton card component
+    const SkeletonCard = () => (
+        <div className="skeleton-card">
+            <div className="skeleton skeleton-image"></div>
+            <div style={{ padding: '1rem' }}>
+                <div className="skeleton skeleton-text"></div>
+                <div className="skeleton skeleton-text-sm"></div>
+                <div className="skeleton skeleton-text-sm" style={{ width: '40%', marginTop: '0.75rem' }}></div>
+            </div>
+        </div>
+    );
+
     return (
-        <div className="products-page container py-16">
+        <div className="products-page container py-16" style={{ marginTop: '100px' }}>
 
             {/* Page Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                    <h1 className="text-4xl mb-2">Our Collection</h1>
-                    <p className="text-muted">Showing {filteredProducts.length} unique items</p>
+            <div className="products-page-header">
+                <div className="products-page-header__text">
+                    <h1 className="section-title">Our Collection</h1>
+                    <p className="text-muted" style={{ marginTop: '0.5rem' }}>
+                        Curated essentials, handpicked for quality and style.
+                    </p>
                 </div>
 
                 {/* Search Bar */}
-                <form onSubmit={handleSearchSubmit} className="search-bar-wrapper flex">
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                    <button type="submit" className="btn btn-primary search-btn"><Search size={20} /></button>
+                <form onSubmit={handleSearchSubmit} className="search-bar-wrapper">
+                    <div className="search-input-group">
+                        <Search size={18} className="search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="search-input"
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary search-btn">Search</button>
                 </form>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                {/* Mobile Filter Toggle */}
+            {/* Mobile Category Pills (horizontal scroll) */}
+            <div className="mobile-category-pills">
                 <button
-                    className="btn btn-outline lg:hidden flex items-center gap-2 mb-4 w-fit"
-                    onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+                    className={`category-pill ${selectedCategory === 'all' ? 'active' : ''}`}
+                    onClick={() => handleCategoryChange('all')}
                 >
-                    <Filter size={20} /> Filters
+                    All
                 </button>
+                {categories.map(cat => (
+                    <button
+                        key={cat.id}
+                        className={`category-pill ${selectedCategory === String(cat.id) ? 'active' : ''}`}
+                        onClick={() => handleCategoryChange(String(cat.id))}
+                    >
+                        {cat.name}
+                    </button>
+                ))}
+                <button
+                    className={`category-pill category-pill--sale ${selectedCategory === 'sale' ? 'active' : ''}`}
+                    onClick={() => handleCategoryChange('sale')}
+                >
+                    Offers %
+                </button>
+            </div>
 
-                {/* Sidebar Filters */}
-                <aside className={`filters-sidebar glass p-6 rounded-xl ${isMobileFiltersOpen ? 'open' : ''} lg:block`}>
-                    <div className="flex justify-between items-center mb-6 lg:mb-4">
-                        <h3 className="text-xl">Categories</h3>
-                        {isMobileFiltersOpen && (
-                            <button className="lg:hidden text-muted" onClick={() => setIsMobileFiltersOpen(false)}>Close</button>
-                        )}
+            <div className="products-layout">
+
+                {/* Desktop Sidebar Filters */}
+                <aside className="filters-sidebar glass rounded-xl">
+                    <div className="filters-sidebar__header">
+                        <h3 style={{ fontSize: '1.1rem', marginBottom: 0 }}>
+                            <Filter size={18} style={{ display: 'inline', verticalAlign: '-3px', marginRight: '8px' }} />
+                            Categories
+                        </h3>
                     </div>
                     <ul className="category-filters-list">
                         <li
@@ -152,17 +216,52 @@ const ProductsPage = () => {
                 </aside>
 
                 {/* Product Grid */}
-                <div className="lg:col-span-3">
-                    {filteredProducts.length === 0 ? (
-                        <div className="glass p-10 text-center rounded-xl">
-                            <h3 className="text-2xl mb-2">No products found</h3>
-                            <p className="text-muted">Try adjusting your filters or search criteria.</p>
-                            <button onClick={() => { handleCategoryChange('all'); setSearchTerm(''); searchParams.delete('search'); setSearchParams(searchParams); }} className="btn btn-outline mt-6">Clear All Filters</button>
+                <div className="products-grid-area">
+                    {loading ? (
+                        /* Skeleton Loading State */
+                        <div className="products-grid">
+                            {Array.from({ length: 8 }).map((_, i) => (
+                                <SkeletonCard key={i} />
+                            ))}
+                        </div>
+                    ) : filteredProducts.length === 0 ? (
+                        /* Empty State */
+                        <div className="empty-state reveal">
+                            <div className="empty-state__icon">
+                                <PackageOpen size={56} strokeWidth={1.2} />
+                            </div>
+                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>No products found</h3>
+                            <p className="text-muted" style={{ marginBottom: '1.5rem' }}>Try adjusting your filters or search criteria.</p>
+                            <button
+                                onClick={() => { handleCategoryChange('all'); setSearchTerm(''); searchParams.delete('search'); setSearchParams(searchParams); }}
+                                className="btn btn-outline"
+                            >
+                                Clear All Filters
+                            </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 px-2 md:px-0">
-                            {filteredProducts.map(product => (
-                                <div key={product.id} className="product-card-minimal group relative fade-in">
+                        /* Product Cards */
+                        <>
+                        <div className="products-toolbar">
+                            <span className="products-toolbar__count">
+                                {filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}
+                            </span>
+                            <div className="products-toolbar__sort">
+                                <label htmlFor="sort">Sort by</label>
+                                <select id="sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                                    <option value="newest">Newest</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="name">Name: A to Z</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="products-grid">
+                            {sortedProducts.map((product, index) => (
+                                <div
+                                    key={product.id}
+                                    className={`product-card-minimal group relative reveal stagger-${(index % 8) + 1}`}
+                                >
                                     <Link to={`/product/${product.id}`} className="block relative overflow-hidden">
                                         {product.is_sale && (
                                             <div className="absolute top-3 left-3 z-10">
@@ -189,16 +288,16 @@ const ProductsPage = () => {
                                                 <p className="text-[0.8rem] text-muted mb-3 line-clamp-2 w-full overflow-hidden leading-relaxed italic" style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{product.description}</p>
                                             )}
                                         </div>
-                                        <div className="flex items-center justify-center gap-2 mt-auto" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                        <div className="flex items-center justify-center gap-3 mt-auto" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
                                             {product.discounted_price ? (
                                                 <>
-                                                    <span className="text-[0.85rem] text-gray-500 line-through font-normal">{Number(product.price).toFixed(2)} PKR</span>
-                                                    <span className="text-black tracking-tight" style={{ fontWeight: 900, fontSize: '1.2rem', textShadow: '0 0 1px rgba(0,0,0,0.5)' }}>{Number(product.discounted_price).toFixed(2)} PKR</span>
+                                                    <span className="text-[0.8rem] text-gray-400 line-through font-normal">Rs. {Math.round(product.price).toLocaleString()}</span>
+                                                    <span className="text-main tracking-tight font-extrabold text-[1.1rem]">Rs. {Math.round(product.discounted_price).toLocaleString()}</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span className="text-[0.85rem] text-gray-500 line-through font-normal">{(Number(product.price) + 500).toFixed(2)} PKR</span>
-                                                    <span className="text-black tracking-tight" style={{ fontWeight: 900, fontSize: '1.2rem', textShadow: '0 0 1px rgba(0,0,0,0.5)' }}>{Number(product.price).toFixed(2)} PKR</span>
+                                                    <span className="text-[0.8rem] text-gray-400 line-through font-normal">Rs. {Math.round(Number(product.price) + 500).toLocaleString()}</span>
+                                                    <span className="text-main tracking-tight font-extrabold text-[1.1rem]">Rs. {Math.round(product.price).toLocaleString()}</span>
                                                 </>
                                             )}
                                         </div>
@@ -206,6 +305,7 @@ const ProductsPage = () => {
                                 </div>
                             ))}
                         </div>
+                        </>
                     )}
                 </div>
 

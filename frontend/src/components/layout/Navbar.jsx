@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -23,52 +23,83 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isMobileMenuOpen]);
+
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
     return (
-        <header className={`navbar ${isScrolled ? 'scrolled glass' : ''}`}>
-            <div className="container navbar-container">
+        <>
+            <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+                <div className="container navbar-container">
 
-                {/* Logo */}
-                <Link to="/" className="navbar-logo">
-                    <img src="/logo-removebg-preview.png" alt="UZquettaStore Logo" />
-                </Link>
-
-                {/* Desktop Nav */}
-                <nav className="navbar-links desktop-only">
-                    <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Home</NavLink>
-                    <NavLink to="/products" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Shop</NavLink>
-                    <NavLink to="/contact" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Contact</NavLink>
-                </nav>
-
-                {/* Actions */}
-                <div className="navbar-actions">
-                    <Link to="/cart" className="icon-btn">
-                        <ShoppingCart size={24} />
-                        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-                    </Link>
-                    <Link to="/login" className="icon-btn">
-                        <User size={24} />
+                    {/* Logo */}
+                    <Link to="/" className="navbar-logo">
+                        <img src="/logo-removebg-preview.png" alt="UZquettaStore Logo" />
                     </Link>
 
-                    <button
-                        className="mobile-menu-btn icon-btn mobile-only"
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    >
-                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
+                    {/* Desktop Nav */}
+                    <nav className="navbar-links desktop-only">
+                        <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Home</NavLink>
+                        <NavLink to="/products" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Shop</NavLink>
+                        <NavLink to="/contact" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Contact</NavLink>
+                    </nav>
+
+                    {/* Actions */}
+                    <div className="navbar-actions">
+                        <Link to="/cart" className="icon-btn">
+                            <ShoppingCart size={22} />
+                            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                        </Link>
+                        <Link to="/login" className="icon-btn">
+                            <User size={22} />
+                        </Link>
+
+                        <button
+                            className="mobile-menu-btn icon-btn mobile-only"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
+
                 </div>
+            </header>
 
-            </div>
+            {/* Full-Screen Mobile Menu Overlay */}
+            <div
+                className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`}
+                onClick={(e) => {
+                    // Close when clicking backdrop (not the links)
+                    if (e.target === e.currentTarget) closeMobileMenu();
+                }}
+            >
+                <button
+                    className="mobile-menu-close"
+                    onClick={closeMobileMenu}
+                    aria-label="Close menu"
+                >
+                    <X size={24} />
+                </button>
 
-            {/* Mobile Menu */}
-            <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
                 <nav className="mobile-nav-links">
-                    <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-                    <Link to="/products" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
-                    <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+                    <Link to="/" onClick={closeMobileMenu}>Home</Link>
+                    <Link to="/products" onClick={closeMobileMenu}>Shop</Link>
+                    <Link to="/contact" onClick={closeMobileMenu}>Contact</Link>
+                    <Link to="/login" onClick={closeMobileMenu}>Login</Link>
                 </nav>
             </div>
-        </header>
+        </>
     );
 };
 
